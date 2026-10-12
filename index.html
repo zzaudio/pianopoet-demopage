@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="PianoPoet unifies piano transcription and rendering in a single autoregressive Transformer checkpoint."
+    />
+    <meta name="theme-color" content="#f7f9f7" />
+    <title>PianoPoet | Demo Page</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a class="wordmark" href="#top" aria-label="PianoPoet home">
+        <span class="wordmark-mark" aria-hidden="true"></span>
+        PianoPoet
+      </a>
+      <div class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#rendering">Rendering</a>
+        <a href="#codec">Codec</a>
+        <a href="#restoration">Restoration</a>
+        <a href="#stereo-control">Stereo Positioning</a>
+      </div>
+    </nav>
+
+    <main id="main-content">
+      <header class="masthead" id="top">
+        <div class="masthead-copy">
+          <p class="eyebrow">Demo page</p>
+          <h1>
+            <span>PianoPoet</span>
+            Unifying Piano Transcription and Rendering via Auto-regressive Modeling
+          </h1>
+          <p class="tldr">
+            A single-checkpoint model for neural piano transcription and rendering,
+            built on one shared auto-regressive Transformer backbone.
+          </p>
+        </div>
+
+        <div class="direction-map" aria-label="PianoPoet maps between piano audio and MIDI">
+          <span>Piano audio</span>
+          <span class="direction-arrow" aria-hidden="true">&#8596;</span>
+          <span class="direction-core">PianoPoet</span>
+          <span class="direction-arrow" aria-hidden="true">&#8596;</span>
+          <span>MIDI</span>
+        </div>
+      </header>
+
+      <section class="section figure-section" id="overview" aria-labelledby="overview-title">
+        <div class="section-heading">
+          <p class="section-index">01 / Overview</p>
+          <h2 id="overview-title">One backbone, both directions</h2>
+          <p>
+            PianoPoet frames transcription and rendering as sequence-to-sequence tasks
+            with a shared MIDI tokenizer but decoupled audio representations: semantic
+            audio frames for transcription, and acoustic tokens for rendering.
+          </p>
+        </div>
+
+        <figure class="paper-figure paper-figure--wide">
+          <img
+            src="figs/fig_model6.png"
+            width="2400"
+            height="713"
+            alt="PianoPoet architecture for piano transcription and piano rendering"
+          />
+        </figure>
+      </section>
+
+      <section class="section results-section" aria-labelledby="results-title">
+        <div class="results-copy">
+          <p class="section-index">Joint capability</p>
+          <h2 id="results-title">A single checkpoint at the frontier</h2>
+          <p>
+            The unified model reaches strong results in both acoustic-to-symbolic
+            transcription and symbolic-to-acoustic rendering.
+          </p>
+          <dl class="result-facts">
+            <div>
+              <dt>1</dt>
+              <dd>shared checkpoint</dd>
+            </div>
+            <div>
+              <dt>2</dt>
+              <dd>generative directions</dd>
+            </div>
+            <div>
+              <dt>AR</dt>
+              <dd>training objective</dd>
+            </div>
+          </dl>
+        </div>
+
+        <figure class="paper-figure paper-figure--square">
+          <img
+            src="figs/fig_pianopoet_joint_capability3.png"
+            width="1400"
+            height="1400"
+            loading="lazy"
+            alt="Comparison of transcription onset F1 score and rendering LPAPS across models"
+          />
+          <figcaption>
+            <strong>Figure 2.</strong> Arrows indicate the preferred direction for each
+            metric.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="section abstract-section" aria-labelledby="abstract-title">
+        <div class="section-heading section-heading--compact">
+          <p class="section-index">Abstract</p>
+          <h2 id="abstract-title">Across acoustic and symbolic music</h2>
+        </div>
+        <div class="abstract-copy">
+          <p>
+            Solo-piano transcription and rendering connect the acoustic and symbolic
+            domains of music in opposite directions. Although pianists naturally move
+            between these domains, recent unified models lag behind task-specific
+            methods. To address this challenge, we present PianoPoet, a single-checkpoint
+            auto-regressive framework that unifies both tasks with a shared Transformer
+            backbone.
+          </p>
+          <p>
+            We formulate both directions as sequence-to-sequence problems and identify
+            the construction of sequences with appropriate representations as a key
+            challenge. PianoPoet shares a common MIDI tokenizer for both directions while
+            decoupling audio representations: continuous semantic audio frames for
+            fine-grained transcription, and a piano-specific discrete audio tokenizer for
+            realistic piano rendering. Both tasks are optimized with cross-entropy loss.
+          </p>
+          <p>
+            PianoPoet outperforms prior unified models, achieves the best results among
+            the evaluated generative transcription methods, and outperforms specialized
+            rendering methods in most evaluated metrics. It supports full-band stereo
+            rendering and stereo-position control through acoustic prompts. Ablations
+            show that both directions can share a backbone with little interference while
+            remaining comparable to single-task variants.
+          </p>
+        </div>
+      </section>
+
+      <section class="section demo-section" id="rendering" aria-labelledby="rendering-title">
+        <div class="section-heading">
+          <h2 id="rendering-title">Piano rendering</h2>
+          <p>Examples are drawn from the MAESTRO test set [1].</p>
+        </div>
+        <div id="rendering-demo" class="demo-shell"></div>
+      </section>
+
+      <section class="section demo-section demo-section--cool" id="codec" aria-labelledby="codec-title">
+        <div class="section-heading">
+          <p class="section-index">03 / Reconstruction</p>
+          <h2 id="codec-title">Piano audio codec</h2>
+          <p>
+            We compare the reconstruction performance between PianoPoet DAC and
+            general-purpose &amp; piano-specific neural codecs. Examples are drawn from
+            the MAESTRO test set [1].
+          </p>
+        </div>
+        <div id="codec-demo" class="demo-shell"></div>
+      </section>
+
+      <section class="section restoration-section" id="restoration" aria-labelledby="restoration-title">
+        <div class="section-heading">
+          <p class="section-index">04 / Zero-shot transfer</p>
+          <h2 id="restoration-title">Historical piano restoration</h2>
+          <p>
+            PianoPoet restores noisy historical piano recordings by composing its two
+            learned directions, without restoration-specific training or fine-tuning.
+          </p>
+        </div>
+
+        <div class="restoration-pipeline" aria-label="PianoPoet zero-shot restoration pipeline">
+          <div>
+            <span>Input</span>
+            <strong>Noisy piano audio</strong>
+          </div>
+          <span class="pipeline-arrow" aria-hidden="true">&#8594;</span>
+          <div>
+            <span>Transcribe</span>
+            <strong>PianoPoet to MIDI</strong>
+          </div>
+          <span class="pipeline-arrow" aria-hidden="true">&#8594;</span>
+          <div>
+            <span>Prompted render</span>
+            <strong>MIDI + clean audio prompt</strong>
+          </div>
+          <span class="pipeline-arrow" aria-hidden="true">&#8594;</span>
+          <div>
+            <span>Output</span>
+            <strong>Restored piano audio</strong>
+          </div>
+        </div>
+
+        <div class="restoration-notes">
+          <p>
+            <strong>PianoPoet, zero-shot.</strong> The noisy source is first transcribed
+            into MIDI. That MIDI is then rendered with the shared clean piano audio
+            prompt, using the same unified checkpoint in both directions. The five-second
+            conditioning prompt is included in the listening comparison below.
+          </p>
+          <p>
+            <strong>Trained, specialized baseline.</strong> Both baseline stages are
+            designed specifically for restoration: Moliner's supervised Two-Stage U-Net
+            denoiser is followed by BABE-2, which uses a trained diffusion prior for
+            generative equalization.
+          </p>
+        </div>
+
+        <div class="restoration-references" aria-label="Restoration baseline references">
+          <span>Baseline references</span>
+          <a href="https://arxiv.org/abs/2202.08702" target="_blank" rel="noreferrer">
+            A Two-Stage U-Net for High-Fidelity Denoising of Historical Recordings
+            (arXiv:2202.08702)
+          </a>
+          <a href="https://arxiv.org/abs/2403.18636" target="_blank" rel="noreferrer">
+            A Diffusion-Based Generative Equalizer for Music Restoration
+            (arXiv:2403.18636)
+          </a>
+        </div>
+
+        <div class="format-comparison" aria-label="Restoration output format comparison">
+          <strong>Output format</strong>
+          <span><b>PianoPoet</b> 48 kHz stereo</span>
+          <span><b>Moliner + BABE-2</b> 22.05 kHz mono</span>
+        </div>
+
+        <div id="restoration-demo" class="demo-shell restoration-demo"></div>
+      </section>
+
+      <section class="section stereo-section" id="stereo-control" aria-labelledby="stereo-title">
+        <div class="section-heading">
+          <p class="section-index">05 / Acoustic prompting</p>
+          <h2 id="stereo-title">Stereo-position control</h2>
+          <p>
+            PianoPoet changes spatial position and room character through acoustic
+            prompting while keeping the transcribed MIDI performance fixed.
+          </p>
+        </div>
+
+        <div class="stereo-story">
+          <div>
+            <span>Fixed performance</span>
+            <strong>Noisy Chopin audio &#8594; PianoPoet transcription &#8594; MIDI</strong>
+          </div>
+          <div>
+            <span>Controlled rendering</span>
+            <strong>Same MIDI + different acoustic prompts &#8594; stereo audio</strong>
+          </div>
+          <p>
+            Each five-second acoustic prompt is paired below with its aligned 30-second
+            rendering, making the resulting left, center, and right presentations
+            directly comparable.
+          </p>
+        </div>
+
+        <div class="stereo-positions" aria-label="Stereo positions represented by the outputs">
+          <span><b>L</b> Dry / left</span>
+          <span><b>C</b> Wet / center</span>
+          <span><b>R</b> Dry / right</span>
+        </div>
+
+        <div id="stereo-demo" class="demo-shell stereo-demo"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="wordmark" href="#top">
+        <span class="wordmark-mark" aria-hidden="true"></span>
+        PianoPoet
+      </a>
+      <div class="site-footer-details">
+        <p>Demo page</p>
+        <p>
+          [1] MAESTRO dataset: Curtis Hawthorne et al. “Enabling Factorized Piano
+          Music Modeling and Generation with the MAESTRO Dataset.” ICLR 2019.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

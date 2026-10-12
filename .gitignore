@@ -1,0 +1,10 @@
+# The demo uses compressed 30-second MP3 previews instead.
+*.flac
+*.wav
+
+# Original noisy recordings are linked on YouTube, not redistributed.
+/mp3-30s/restoration/noisy/
+
+# Local submission instructions and design notes are not part of the demo.
+/README.txt
+/design.md
