@@ -226,21 +226,35 @@ class AudioComparison {
       <div class="demo-topbar">
         <div>
           <span class="track-label">${this.config.trackLabel ?? "Select performance"}</span>
-          <div class="track-picker" role="tablist" aria-label="${this.config.trackAriaLabel ?? "Performances"}">
-            ${this.tracks.map(
-              (track, index) => `
-                <button
-                  class="track-button"
-                  type="button"
-                  role="tab"
-                  aria-selected="${index === this.trackIndex}"
-                  data-track-index="${index}"
-                >
-                  <span>${String(index + 1).padStart(2, "0")}</span>
-                  <strong>${track.shortLabel ?? track.composer.replace(/^.*\. /, "")}</strong>
-                </button>
-              `,
-            ).join("")}
+          <div class="track-navigation">
+            ${this.tracks.length > 1 ? `
+              <button class="track-scroll-button" type="button" data-scroll-direction="-1"
+                aria-label="Scroll to previous examples" aria-controls="${this.config.rootId}-tracks" disabled>
+                <span aria-hidden="true">&#8592;</span>
+              </button>
+            ` : ""}
+            <div class="track-picker" id="${this.config.rootId}-tracks" role="tablist" aria-label="${this.config.trackAriaLabel ?? "Performances"}">
+              ${this.tracks.map(
+                (track, index) => `
+                  <button
+                    class="track-button"
+                    type="button"
+                    role="tab"
+                    aria-selected="${index === this.trackIndex}"
+                    data-track-index="${index}"
+                  >
+                    <span>${String(index + 1).padStart(2, "0")}</span>
+                    <strong>${track.shortLabel ?? track.composer.replace(/^.*\. /, "")}</strong>
+                  </button>
+                `,
+              ).join("")}
+            </div>
+            ${this.tracks.length > 1 ? `
+              <button class="track-scroll-button" type="button" data-scroll-direction="1"
+                aria-label="Scroll to next examples" aria-controls="${this.config.rootId}-tracks" disabled>
+                <span aria-hidden="true">&#8594;</span>
+              </button>
+            ` : ""}
           </div>
         </div>
         <label class="volume-control">
@@ -276,6 +290,30 @@ class AudioComparison {
     this.methodList = this.root.querySelector(".method-list");
     this.trackTitle = this.root.querySelector(".track-title");
     this.trackMeta = this.root.querySelector(".track-meta");
+    this.trackPicker = this.root.querySelector(".track-picker");
+    this.trackScrollButtons = this.root.querySelectorAll(".track-scroll-button");
+
+    this.trackScrollButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const direction = Number(button.dataset.scrollDirection);
+        const bounds = this.trackPicker.getBoundingClientRect();
+        const tracks = [...this.trackPicker.querySelectorAll(".track-button")];
+        const target = (direction > 0 ? tracks : tracks.reverse()).find((track) => {
+          const trackBounds = track.getBoundingClientRect();
+          return direction > 0 ? trackBounds.right > bounds.right + 1 : trackBounds.left < bounds.left - 1;
+        });
+        if (target) {
+          const targetBounds = target.getBoundingClientRect();
+          this.trackPicker.scrollBy({
+            left: direction > 0 ? targetBounds.right - bounds.right : targetBounds.left - bounds.left,
+          });
+        }
+      });
+    });
+    this.trackPicker.addEventListener("scroll", () => this.updateTrackScrollButtons());
+    this.trackResizeObserver = new ResizeObserver(() => this.updateTrackScrollButtons());
+    this.trackResizeObserver.observe(this.trackPicker);
+    this.updateTrackScrollButtons();
 
     this.root.querySelectorAll(".track-button").forEach((button) => {
       button.addEventListener("click", () => this.selectTrack(Number(button.dataset.trackIndex)));
@@ -290,6 +328,15 @@ class AudioComparison {
       this.rows.forEach(({ audio }) => {
         audio.volume = this.volume;
       });
+    });
+  }
+
+  updateTrackScrollButtons() {
+    const { scrollLeft, scrollWidth, clientWidth } = this.trackPicker;
+    this.trackScrollButtons.forEach((button) => {
+      button.disabled = Number(button.dataset.scrollDirection) < 0
+        ? scrollLeft <= 1
+        : scrollLeft >= scrollWidth - clientWidth - 1;
     });
   }
 

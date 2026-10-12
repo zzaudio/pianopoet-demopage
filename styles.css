@@ -592,11 +592,44 @@ figcaption {
   text-transform: uppercase;
 }
 
-.track-picker {
+.track-navigation {
   display: flex;
   gap: 0.45rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.track-scroll-button {
+  display: none;
+  flex: 0 0 2.5rem;
+  width: 2.5rem;
+  height: 3rem;
+  padding: 0;
+  place-items: center;
+  color: var(--green);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.track-scroll-button:hover:not(:disabled) {
+  background: var(--green-light);
+}
+
+.track-scroll-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.track-picker {
+  display: flex;
+  flex: 1;
+  gap: 0.45rem;
+  min-width: 0;
   padding: 0.15rem 0 0.45rem;
   overflow-x: auto;
+  scroll-behavior: smooth;
   scrollbar-width: thin;
 }
 
@@ -1018,7 +1051,11 @@ input:focus-visible {
   }
 
   .demo-topbar {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .track-scroll-button {
+    display: grid;
   }
 
   .volume-control {
@@ -1185,7 +1222,8 @@ input:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
+  html,
+  .track-picker {
     scroll-behavior: auto;
   }
 
